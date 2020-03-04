@@ -48,10 +48,10 @@ export class EnvironmentEC2 extends cdk.Stack {
     const fn = new lambda.CfnFunction(this, 'Function', fnProps);
     
     // Lambda function event invoke config
-    const fnCfgDir = `${BASE_DIR}/compute/lambda/event-invoke-config-configure-cloud9`;
-    const fnCfgProps: crpm.Writeable<lambda.CfnEventInvokeConfigProps> = crpm.loadProps(`${fnCfgDir}/props.yaml`);
-    fnCfgProps.functionName = fn.ref;
-    new lambda.CfnEventInvokeConfig(this, 'EventInvokeConfig', fnCfgProps);
+    // const fnCfgDir = `${BASE_DIR}/compute/lambda/event-invoke-config-configure-cloud9`;
+    // const fnCfgProps: crpm.Writeable<lambda.CfnEventInvokeConfigProps> = crpm.loadProps(`${fnCfgDir}/props.yaml`);
+    // fnCfgProps.functionName = fn.ref;
+    // new lambda.CfnEventInvokeConfig(this, 'EventInvokeConfig', fnCfgProps);
 
     // Custom resource
     const crDir = `${BASE_DIR}/management-governance/cloudformation/custom-resource-configure-cloud9`;

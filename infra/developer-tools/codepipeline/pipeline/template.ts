@@ -16,6 +16,16 @@ export class Pipeline extends cdk.Stack {
   constructor(scope: cdk.App, id: string, stackProps?: cdk.StackProps) {
     super(scope, id, stackProps);
     
+    // CloudFormation role
+    // After this role has been used by the pipeline, it needs to stick around
+    // until the very end when deleting the stack, because it will need to assumed
+    // to delete resources
+    const cfnRoleProps: crpm.Writeable<iam.CfnRoleProps> = crpm.loadProps(
+      `${BASE_DIR}/security-identity-compliance/iam/role-cloudformation/props.yaml`
+    );
+    cfnRoleProps.roleName = `cloudformation-${cdk.Aws.STACK_NAME}`;
+    const cfnRole = new iam.CfnRole(this, "CloudFormationRole", cfnRoleProps);
+    
     // S3 bucket
     let artifactBucketName = this.node.tryGetContext("artifact_bucket_name");
     if (!artifactBucketName) {
@@ -24,6 +34,7 @@ export class Pipeline extends cdk.Stack {
         "Bucket",
         crpm.loadProps(`${BASE_DIR}/storage/s3/bucket-artifacts/props.yaml`)
       );
+      artifactBucket.addDependsOn(cfnRole);
       artifactBucketName = artifactBucket.ref;
     }
     
@@ -32,7 +43,8 @@ export class Pipeline extends cdk.Stack {
       `${BASE_DIR}/security-identity-compliance/iam/role-lambda/props.yaml`
     );
     roleProps.roleName = `lambda-${cdk.Aws.STACK_NAME}`;
-    const role = new iam.CfnRole(this, 'LambdaRole', roleProps);
+    const fnRole = new iam.CfnRole(this, 'LambdaRole', roleProps);
+    fnRole.addDependsOn(cfnRole);
     
     // Lambda function
     const fnDir = `${BASE_DIR}/compute/lambda/function-clone-source`;
@@ -40,16 +52,17 @@ export class Pipeline extends cdk.Stack {
     fnProps.code = {
       zipFile: fs.readFileSync(`${fnDir}/index.py`, 'utf8')
     }
-    fnProps.role = role.getAtt('Arn').toString();
+    fnProps.role = fnRole.getAtt('Arn').toString();
     fnProps.functionName = `${cdk.Aws.STACK_NAME}-clone-source`;
     const fn = new lambda.CfnFunction(this, 'Function', fnProps);
+    fn.addDependsOn(cfnRole);
     
     // Lambda function event invoke config
-    const fnCfgProps: crpm.Writeable<lambda.CfnEventInvokeConfigProps> = crpm.loadProps(
-      `${BASE_DIR}/compute/lambda/event-invoke-config-clone-source/props.yaml`
-    );
-    fnCfgProps.functionName = fn.ref;
-    new lambda.CfnEventInvokeConfig(this, 'EventInvokeConfig', fnCfgProps);
+    // const fnCfgProps: crpm.Writeable<lambda.CfnEventInvokeConfigProps> = crpm.loadProps(
+    //   `${BASE_DIR}/compute/lambda/event-invoke-config-clone-source/props.yaml`
+    // );
+    // fnCfgProps.functionName = fn.ref;
+    // new lambda.CfnEventInvokeConfig(this, 'EventInvokeConfig', fnCfgProps);
     
     // Custom resource
     const crProps: crpm.Writeable<cfn.CfnCustomResourceProps> = crpm.loadProps(
@@ -57,6 +70,7 @@ export class Pipeline extends cdk.Stack {
     );
     crProps.serviceToken = fn.getAtt('Arn').toString();
     const cr = new cfn.CfnCustomResource(this, 'CustomResource', crProps);
+    cr.addDependsOn(cfnRole);
     cr.addPropertyOverride('artifactBucketName', artifactBucketName);
     
     // CodeCommit repository
@@ -67,6 +81,7 @@ export class Pipeline extends cdk.Stack {
     (repoProps.code as any).s3.bucket = artifactBucketName;
     const repo = new codecommit.CfnRepository(this, "Repository", repoProps);
     repo.addDependsOn(cr);
+    repo.addDependsOn(cfnRole);
     
     // CodeBuild role
     const projectRoleProps: crpm.Writeable<iam.CfnRoleProps> = crpm.loadProps(
@@ -74,6 +89,7 @@ export class Pipeline extends cdk.Stack {
     );
     projectRoleProps.roleName = `codebuild-${cdk.Aws.STACK_NAME}`;
     const projectRole = new iam.CfnRole(this, "CodeBuildRole", projectRoleProps);
+    projectRole.addDependsOn(cfnRole);
     
     // CodeBuild project
     const projectProps: crpm.Writeable<codebuild.CfnProjectProps> = crpm.loadProps(
@@ -82,6 +98,7 @@ export class Pipeline extends cdk.Stack {
     projectProps.serviceRole = `${projectRole.getAtt("Arn")}`;
     projectProps.name = cdk.Aws.STACK_NAME;
     const project = new codebuild.CfnProject(this, "Project", projectProps);
+    project.addDependsOn(cfnRole);
     
     // CodePipeline role
     const pipelineRoleProps: crpm.Writeable<iam.CfnRoleProps> = crpm.loadProps(
@@ -89,13 +106,7 @@ export class Pipeline extends cdk.Stack {
     );
     pipelineRoleProps.roleName = `codepipeline-${cdk.Aws.STACK_NAME}`;
     const pipelineRole = new iam.CfnRole(this, "CodePipelineRole", pipelineRoleProps);
-    
-    // CloudFormation role
-    const cfnRoleProps: crpm.Writeable<iam.CfnRoleProps> = crpm.loadProps(
-      `${BASE_DIR}/security-identity-compliance/iam/role-cloudformation/props.yaml`
-    );
-    cfnRoleProps.roleName = `cloudformation-${cdk.Aws.STACK_NAME}`;
-    const cfnRole = new iam.CfnRole(this, "CloudFormationRole", cfnRoleProps);
+    pipelineRole.addDependsOn(cfnRole);
     
     // CodePipeline pipeline
     const pipelineProps: crpm.Writeable<codepipeline.CfnPipelineProps> = crpm.loadProps(
@@ -115,6 +126,7 @@ export class Pipeline extends cdk.Stack {
     };
     pipelineProps.name = cdk.Aws.STACK_NAME;
     const pipeline = new codepipeline.CfnPipeline(this, "Pipeline", pipelineProps);
+    pipeline.addDependsOn(cfnRole);
     
     // CloudWatch Events role
     const eventsRoleProps: crpm.Writeable<iam.CfnRoleProps> = crpm.loadProps(
@@ -122,6 +134,7 @@ export class Pipeline extends cdk.Stack {
     );
     eventsRoleProps.roleName = `cloudwatch-events-${cdk.Aws.STACK_NAME}`;
     const eventsRole = new iam.CfnRole(this, "EventsRole", eventsRoleProps);
+    eventsRole.addDependsOn(cfnRole);
     
     // CloudWatch Events rule
     const ruleProps: crpm.Writeable<events.CfnRuleProps> = crpm.loadProps(
@@ -134,6 +147,7 @@ export class Pipeline extends cdk.Stack {
     const target = (ruleProps.targets as any)[0];
     target.arn = `arn:aws:codepipeline:${this.region}:${this.account}:${pipeline.ref}`;
     target.roleArn = `${eventsRole.getAtt("Arn")}`;
-    new events.CfnRule(this, "Rule", ruleProps);
+    const rule = new events.CfnRule(this, "Rule", ruleProps);
+    rule.addDependsOn(cfnRole);
   }
 }

@@ -22,7 +22,7 @@ def lambda_handler(event, context):
         
         s3 = boto3.client('s3')
         with open('/tmp/source.zip', 'rb') as f:
-            s3.upload_fileobj(f, artifact_bucket_name, 'quick-start/source.zip')
+            s3.upload_fileobj(f, artifact_bucket_name, 'quick-start/Source/quickstart-shi-crpm.zip')
         
         print('Copied quick start source from GitHub to S3')
     except:
