@@ -1,0 +1,34 @@
+{
+  "name": "quickstart-shi-crpm",
+  "version": "1.0.0",
+  "description": "AWS Quick Start to create an infrastructure CI/CD pipeline that watches itself, along with an IDE with CRPM pre-installed to edit the infrastructure code",
+  "keywords": [
+    "crpm"
+  ],
+  "homepage": "https://github.com/shi/quickstart-shi-crpm",
+  "license": "Apache-2.0",
+  "author": {
+    "name": "SHI International Corp.",
+    "url": "https://www.shi.com",
+    "organization": true
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shi/quickstart-shi-crpm.git"
+  },
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w"
+  },
+  "devDependencies": {
+    "@types/node": "^13.1.6",
+    "typescript": "^3.7.4"
+  },
+  "dependencies": {
+    "@aws-cdk/aws-cloudformation": "^1.21.1",
+    "@aws-cdk/aws-lambda": "^1.21.1",
+    "@aws-cdk/core": "^1.21.1",
+    "aws-cdk": "^1.20.0",
+    "crpm": "^1.4.0"
+  }
+}
