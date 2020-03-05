@@ -18,8 +18,8 @@ export class Pipeline extends cdk.Stack {
     
     // CloudFormation role
     // After this role has been used by the pipeline, it needs to stick around
-    // until the very end when deleting the stack, because it will need to assumed
-    // to delete resources
+    // until the very end when deleting the stack, because it will need to be
+    // assumed to delete resources that were modified by the pipeline
     const cfnRoleProps: crpm.Writeable<iam.CfnRoleProps> = crpm.loadProps(
       `${BASE_DIR}/security-identity-compliance/iam/role-cloudformation/props.yaml`
     );
@@ -35,7 +35,6 @@ export class Pipeline extends cdk.Stack {
         "Bucket",
         crpm.loadProps(`${BASE_DIR}/storage/s3/bucket-artifacts/props.yaml`)
       );
-      artifactBucket.addDependsOn(cfnRole);
       artifactBucketName = artifactBucket.ref;
     }
     
@@ -45,6 +44,7 @@ export class Pipeline extends cdk.Stack {
     );
     fnRoleProps.roleName = `lambda-${cdk.Aws.STACK_NAME}`;
     const fnRole = new iam.CfnRole(this, 'LambdaRole', fnRoleProps);
+    // Make sure the CloudFormation role sticks around until the end
     fnRole.addDependsOn(cfnRole);
     
     // Lambda function
@@ -56,7 +56,6 @@ export class Pipeline extends cdk.Stack {
     fnProps.role = fnRole.getAtt('Arn').toString();
     fnProps.functionName = `${cdk.Aws.STACK_NAME}-custom-resource`;
     const fn = new lambda.CfnFunction(this, 'Function', fnProps);
-    fn.addDependsOn(cfnRole);
     
     // Custom resource
     const crProps: crpm.Writeable<cfn.CfnCustomResourceProps> = crpm.loadProps(
@@ -70,7 +69,6 @@ export class Pipeline extends cdk.Stack {
     } else {
       cr.addPropertyOverride('EmptyBucketOnDelete', false);
     }
-    cr.addDependsOn(cfnRole);
     
     // CodeCommit repository
     const repoProps: crpm.Writeable<codecommit.CfnRepositoryProps> = crpm.loadProps(
@@ -80,7 +78,6 @@ export class Pipeline extends cdk.Stack {
     (repoProps.code as any).s3.bucket = artifactBucketName;
     const repo = new codecommit.CfnRepository(this, "Repository", repoProps);
     repo.addDependsOn(cr);
-    repo.addDependsOn(cfnRole);
     
     // CodeBuild role
     const projectRoleProps: crpm.Writeable<iam.CfnRoleProps> = crpm.loadProps(
@@ -88,7 +85,6 @@ export class Pipeline extends cdk.Stack {
     );
     projectRoleProps.roleName = `codebuild-${cdk.Aws.STACK_NAME}`;
     const projectRole = new iam.CfnRole(this, "CodeBuildRole", projectRoleProps);
-    projectRole.addDependsOn(cfnRole);
     
     // CodeBuild project
     const projectProps: crpm.Writeable<codebuild.CfnProjectProps> = crpm.loadProps(
@@ -97,7 +93,6 @@ export class Pipeline extends cdk.Stack {
     projectProps.serviceRole = `${projectRole.getAtt("Arn")}`;
     projectProps.name = cdk.Aws.STACK_NAME;
     const project = new codebuild.CfnProject(this, "Project", projectProps);
-    project.addDependsOn(cfnRole);
     
     // CodePipeline role
     const pipelineRoleProps: crpm.Writeable<iam.CfnRoleProps> = crpm.loadProps(
@@ -105,7 +100,6 @@ export class Pipeline extends cdk.Stack {
     );
     pipelineRoleProps.roleName = `codepipeline-${cdk.Aws.STACK_NAME}`;
     const pipelineRole = new iam.CfnRole(this, "CodePipelineRole", pipelineRoleProps);
-    pipelineRole.addDependsOn(cfnRole);
     
     // CodePipeline pipeline
     const pipelineProps: crpm.Writeable<codepipeline.CfnPipelineProps> = crpm.loadProps(
@@ -125,7 +119,6 @@ export class Pipeline extends cdk.Stack {
     };
     pipelineProps.name = cdk.Aws.STACK_NAME;
     const pipeline = new codepipeline.CfnPipeline(this, "Pipeline", pipelineProps);
-    pipeline.addDependsOn(cfnRole);
     
     // CloudWatch Events role
     const eventsRoleProps: crpm.Writeable<iam.CfnRoleProps> = crpm.loadProps(
@@ -133,7 +126,6 @@ export class Pipeline extends cdk.Stack {
     );
     eventsRoleProps.roleName = `cloudwatch-events-${cdk.Aws.STACK_NAME}`;
     const eventsRole = new iam.CfnRole(this, "EventsRole", eventsRoleProps);
-    eventsRole.addDependsOn(cfnRole);
     
     // CloudWatch Events rule
     const ruleProps: crpm.Writeable<events.CfnRuleProps> = crpm.loadProps(
@@ -146,7 +138,6 @@ export class Pipeline extends cdk.Stack {
     const target = (ruleProps.targets as any)[0];
     target.arn = `arn:aws:codepipeline:${this.region}:${this.account}:${pipeline.ref}`;
     target.roleArn = `${eventsRole.getAtt("Arn")}`;
-    const rule = new events.CfnRule(this, "Rule", ruleProps);
-    rule.addDependsOn(cfnRole);
+    new events.CfnRule(this, "Rule", ruleProps);
   }
 }
