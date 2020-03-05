@@ -38,24 +38,19 @@ export class EnvironmentEC2 extends cdk.Stack {
     const ssmDoc = new ssm.CfnDocument(this, "Document", ssmDocProps);
     
     // Lambda function
-    const fnDir = `${BASE_DIR}/compute/lambda/function-configure-cloud9`;
+    const fnDir = `${BASE_DIR}/compute/lambda/function-custom-resource-ide`;
     const fnProps: crpm.Writeable<lambda.CfnFunctionProps> = crpm.loadProps(`${fnDir}/props.yaml`);
     fnProps.code = {
       zipFile: fs.readFileSync(`${fnDir}/index.js`, 'utf8')
     }
     fnProps.role = role.getAtt('Arn').toString();
-    fnProps.functionName = `${cdk.Aws.STACK_NAME}-configure-cloud9`;
+    fnProps.functionName = `${cdk.Aws.STACK_NAME}-custom-resource-ide`;
     const fn = new lambda.CfnFunction(this, 'Function', fnProps);
     
-    // Lambda function event invoke config
-    // const fnCfgDir = `${BASE_DIR}/compute/lambda/event-invoke-config-configure-cloud9`;
-    // const fnCfgProps: crpm.Writeable<lambda.CfnEventInvokeConfigProps> = crpm.loadProps(`${fnCfgDir}/props.yaml`);
-    // fnCfgProps.functionName = fn.ref;
-    // new lambda.CfnEventInvokeConfig(this, 'EventInvokeConfig', fnCfgProps);
-
     // Custom resource
-    const crDir = `${BASE_DIR}/management-governance/cloudformation/custom-resource-configure-cloud9`;
-    const crProps: crpm.Writeable<cfn.CfnCustomResourceProps> = crpm.loadProps(`${crDir}/props.yaml`);
+    const crProps: crpm.Writeable<cfn.CfnCustomResourceProps> = crpm.loadProps(
+      `${BASE_DIR}/management-governance/cloudformation/custom-resource-ide/props.yaml`
+    );
     crProps.serviceToken = fn.getAtt('Arn').toString();
     const cr = new cfn.CfnCustomResource(this, 'CustomResource', crProps);
     cr.addPropertyOverride('cloud9EnvironmentId', c9.ref);

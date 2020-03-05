@@ -27,9 +27,10 @@ export class Pipeline extends cdk.Stack {
     const cfnRole = new iam.CfnRole(this, "CloudFormationRole", cfnRoleProps);
     
     // S3 bucket
+    let artifactBucket;
     let artifactBucketName = this.node.tryGetContext("artifact_bucket_name");
     if (!artifactBucketName) {
-      const artifactBucket = new s3.CfnBucket(
+      artifactBucket = new s3.CfnBucket(
         this,
         "Bucket",
         crpm.loadProps(`${BASE_DIR}/storage/s3/bucket-artifacts/props.yaml`)
@@ -39,39 +40,37 @@ export class Pipeline extends cdk.Stack {
     }
     
     // Lambda role
-    const roleProps: crpm.Writeable<iam.CfnRoleProps> = crpm.loadProps(
+    const fnRoleProps: crpm.Writeable<iam.CfnRoleProps> = crpm.loadProps(
       `${BASE_DIR}/security-identity-compliance/iam/role-lambda/props.yaml`
     );
-    roleProps.roleName = `lambda-${cdk.Aws.STACK_NAME}`;
-    const fnRole = new iam.CfnRole(this, 'LambdaRole', roleProps);
+    fnRoleProps.roleName = `lambda-${cdk.Aws.STACK_NAME}`;
+    const fnRole = new iam.CfnRole(this, 'LambdaRole', fnRoleProps);
     fnRole.addDependsOn(cfnRole);
     
     // Lambda function
-    const fnDir = `${BASE_DIR}/compute/lambda/function-clone-source`;
+    const fnDir = `${BASE_DIR}/compute/lambda/function-custom-resource`;
     const fnProps: crpm.Writeable<lambda.CfnFunctionProps> = crpm.loadProps(`${fnDir}/props.yaml`);
     fnProps.code = {
       zipFile: fs.readFileSync(`${fnDir}/index.py`, 'utf8')
     }
     fnProps.role = fnRole.getAtt('Arn').toString();
-    fnProps.functionName = `${cdk.Aws.STACK_NAME}-clone-source`;
+    fnProps.functionName = `${cdk.Aws.STACK_NAME}-custom-resource`;
     const fn = new lambda.CfnFunction(this, 'Function', fnProps);
     fn.addDependsOn(cfnRole);
     
-    // Lambda function event invoke config
-    // const fnCfgProps: crpm.Writeable<lambda.CfnEventInvokeConfigProps> = crpm.loadProps(
-    //   `${BASE_DIR}/compute/lambda/event-invoke-config-clone-source/props.yaml`
-    // );
-    // fnCfgProps.functionName = fn.ref;
-    // new lambda.CfnEventInvokeConfig(this, 'EventInvokeConfig', fnCfgProps);
-    
     // Custom resource
     const crProps: crpm.Writeable<cfn.CfnCustomResourceProps> = crpm.loadProps(
-      `${BASE_DIR}/management-governance/cloudformation/custom-resource-clone-source/props.yaml`
+      `${BASE_DIR}/management-governance/cloudformation/custom-resource/props.yaml`
     );
     crProps.serviceToken = fn.getAtt('Arn').toString();
     const cr = new cfn.CfnCustomResource(this, 'CustomResource', crProps);
+    cr.addPropertyOverride('ArtifactBucketName', artifactBucketName);
+    if (artifactBucket != undefined) {
+      cr.addPropertyOverride('EmptyBucketOnDelete', true);
+    } else {
+      cr.addPropertyOverride('EmptyBucketOnDelete', false);
+    }
     cr.addDependsOn(cfnRole);
-    cr.addPropertyOverride('artifactBucketName', artifactBucketName);
     
     // CodeCommit repository
     const repoProps: crpm.Writeable<codecommit.CfnRepositoryProps> = crpm.loadProps(
