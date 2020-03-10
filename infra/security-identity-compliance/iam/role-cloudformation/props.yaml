@@ -51,6 +51,7 @@ policies:
           Action:
             - 'codecommit:ListRepositories'
             - 'codebuild:DeleteProject'
+            - 'codebuild:UpdateProject'
             - 'codepipeline:DeletePipeline'
             - 'events:RemoveTargets'
             - 'iam:DeleteRolePolicy'
