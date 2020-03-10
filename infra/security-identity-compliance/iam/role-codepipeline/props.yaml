@@ -48,7 +48,27 @@ policies:
       Version: 2012-10-17
       Statement:
         - Effect: Allow
-          Action: '*'
+          Action:
+            - 'cloudformation:CreateStack'
+            - 'cloudformation:DeleteStack'
+            - 'cloudformation:DescribeStacks'
+            - 'cloudformation:UpdateStack'
+            - 'cloudformation:CreateChangeSet'
+            - 'cloudformation:DeleteChangeSet'
+            - 'cloudformation:DescribeChangeSet'
+            - 'cloudformation:ExecuteChangeSet'
+            - 'cloudformation:SetStackPolicy'
+            - 'cloudformation:ValidateTemplate'
+            - 'codebuild:BatchGetBuilds'
+            - 'codebuild:StartBuild'
+            - 'codecommit:GetBranch'
+            - 'codecommit:GetCommit'
+            - 'codecommit:UploadArchive'
+            - 'codecommit:GetUploadArchiveStatus'
+            - 'codecommit:CancelUploadArchive'
+            - 'iam:PassRole'
+            - 's3:GetObject'
+            - 's3:PutObject'
           Resource: '*'
 
     # Documentation: http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-policy.html#cfn-iam-policies-policyname

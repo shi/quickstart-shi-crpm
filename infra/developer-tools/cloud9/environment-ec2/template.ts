@@ -44,7 +44,7 @@ export class EnvironmentEC2 extends cdk.Stack {
       zipFile: fs.readFileSync(`${fnDir}/index.js`, 'utf8')
     }
     fnProps.role = role.getAtt('Arn').toString();
-    fnProps.functionName = `${cdk.Aws.STACK_NAME}-custom-resource-ide`;
+    fnProps.functionName = `${cdk.Aws.STACK_NAME}-custom-resource`;
     const fn = new lambda.CfnFunction(this, 'Function', fnProps);
     
     // Custom resource
