@@ -49,16 +49,22 @@ policies:
       Statement:
         - Effect: Allow
           Action:
+            - 'codecommit:DeleteRepository'
             - 'codecommit:ListRepositories'
             - 'codebuild:DeleteProject'
             - 'codebuild:UpdateProject'
             - 'codepipeline:DeletePipeline'
+            - 'codepipeline:GetPipeline'
+            - 'events:DeleteRule'
             - 'events:RemoveTargets'
+            - 'iam:DeleteRole'
             - 'iam:DeleteRolePolicy'
             - 'iam:GetRole'
+            - 'iam:PassRole'
             - 'iam:PutRolePolicy'
             - 'lambda:DeleteFunction'
             - 'lambda:InvokeFunction'
+            - 's3:DeleteBucket'
           Resource: '*'
 
     # Documentation: http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-policy.html#cfn-iam-policies-policyname
