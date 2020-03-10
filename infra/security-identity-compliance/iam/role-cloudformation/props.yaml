@@ -49,6 +49,7 @@ policies:
       Statement:
         - Effect: Allow
           Action:
+            - 'codecommit:GetRepository'
             - 'codecommit:DeleteRepository'
             - 'codecommit:ListRepositories'
             - 'codebuild:DeleteProject'
