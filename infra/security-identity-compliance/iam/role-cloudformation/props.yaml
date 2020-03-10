@@ -49,8 +49,15 @@ policies:
       Statement:
         - Effect: Allow
           Action:
+            - 'codecommit:ListRepositories'
+            - 'codebuild:DeleteProject'
+            - 'codepipeline:DeletePipeline'
+            - 'events:RemoveTargets'
+            - 'iam:DeleteRolePolicy'
             - 'iam:GetRole'
             - 'iam:PutRolePolicy'
+            - 'lambda:DeleteFunction'
+            - 'lambda:InvokeFunction'
           Resource: '*'
 
     # Documentation: http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-policy.html#cfn-iam-policies-policyname
