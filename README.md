@@ -13,6 +13,7 @@ This isn't an official AWS Quick Start yet, so here's how to use it in the meant
 
 1.  Log into the [AWS Console](https://aws.amazon.com/console) and create a new [AWS Cloud9](https://aws.amazon.com/cloud9) environment.
 2.  Open the new Cloud9 environment once it has been created, and clone this GitHub repo in it on the command line.
+    
     ```
     git clone https://github.com/shi/quickstart-shi-crpm.git
     cd quickstart-shi-crpm
