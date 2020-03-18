@@ -18,7 +18,7 @@ The easiest way to launch the quick start, is to do it from a Cloud9 IDE.
     git clone https://github.com/shi/quickstart-shi-crpm.git
     cd quickstart-shi-crpm
     ```
-3.  Follow the instructions below.  You will end up with 2 Cloud9 environments when you are all done, and can delete this first one created in the **Getting Started** section after the second one (*quick-start-ide*) has been created.
+3.  Follow the instructions below.  You will end up with 2 Cloud9 environments when you are all done, and can delete this first one created in the **Getting Started** section after the second one below (quick-start-ide) has been created.
 
 ## Create Stacks
 
