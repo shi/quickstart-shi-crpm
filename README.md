@@ -1,9 +1,25 @@
 # AWS Quick Start
 
-Create a CI/CD pipeline that watches itself for changes,
-and an IDE that can be used to edit the pipeline.
+Create a CI/CD pipeline that watches itself for changes, and an
+an IDE that can be used to edit the pipeline infrastructure code.
 
-## Create stacks
+## Infrastructure Diagram
+
+![Infrastructure Diagram](https://raw.githubusercontent.com/shi/quickstart-shi-crpm/master/img/img.png)
+
+## Getting Started
+
+This isn't an official AWS Quick Start yet, so here's how to use it in the meantime.
+
+1.  Log into the [AWS Console](https://aws.amazon.com/console) and create a new [AWS Cloud9](https://aws.amazon.com/cloud9) environment.
+2.  Open the new Cloud9 environment once it has been created, and clone this GitHub repo in it on the command line.
+    ```
+    git clone https://github.com/shi/quickstart-shi-crpm.git
+    cd quickstart-shi-crpm
+    ```
+3.  Follow the instructions below.  You will end up with 2 Cloud9 environments when you are all done, and can delete the first one after the second one has been created.
+
+## Create Stacks
 
 ```
 npm i
@@ -27,7 +43,11 @@ aws cloudformation create-stack \
     --capabilities CAPABILITY_NAMED_IAM
 ```
 
-## Terminate stacks
+## Usage
+
+
+
+## Terminate Stacks
 
 ```
 aws cloudformation delete-stack \
