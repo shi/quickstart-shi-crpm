@@ -5,7 +5,7 @@ an IDE that can be used to edit the pipeline infrastructure code.
 
 ## Infrastructure Diagram
 
-![Infrastructure Diagram](https://raw.githubusercontent.com/shi/quickstart-shi-crpm/master/img/diagram.svg)
+![Infrastructure Diagram](https://raw.githubusercontent.com/shi/quickstart-shi-crpm/master/img/diagram.png)
 
 ## Getting Started
 
