@@ -18,7 +18,7 @@ The easiest way to launch the quick start, is to do it from a Cloud9 IDE.
     git clone https://github.com/shi/quickstart-shi-crpm.git
     cd quickstart-shi-crpm
     ```
-3.  Follow the instructions below.  You will end up with 2 Cloud9 environments when you are all done, and can delete this first one created in the **Getting Started** section after the second one below (quick-start-ide) has been created.
+3.  Follow the instructions below.  You will end up with two Cloud9 environments when you are all done, and can delete this first one created in the **Getting Started** section after the second one below (quick-start-ide) has been created.
 
 ## Create Stacks
 
@@ -42,11 +42,23 @@ aws cloudformation create-stack \
     --stack-name quick-start-ide \
     --template-body file://infra/developer-tools/cloud9/environment-ec2/stack.template.json \
     --capabilities CAPABILITY_NAMED_IAM
+
+aws cloudformation wait stack-create-complete \
+    --stack-name quick-start-ide
 ```
 
 ## Usage
 
-
+1.  Wait for the above stacks to finish being created.
+2.  In the [AWS Console](https://aws.amazon.com/console), open the new [AWS Cloud9](https://aws.amazon.com/cloud9) environment named **quick-start-ide**.
+3.  In Cloud9, try changing some property value in some props.yaml file inside quickstart-shi-crpm/infra/*.
+4.  Commit the change and push it to CodeCommit to kick off the AWS CodePipeline named **quick-start**.
+    
+    ```
+    git add .
+    git commit -m "Try changing a property to test the infrastructure pipeline"
+    git push
+    ```
 
 ## Terminate Stacks
 
