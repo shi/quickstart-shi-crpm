@@ -59,7 +59,9 @@ aws cloudformation wait stack-create-complete \
     git commit -m "Try changing a property to test the infrastructure pipeline"
     git push
     ```
-5.  
+5.  In the [AWS Console](https://aws.amazon.com/console), open the [AWS CodePipeline](https://aws.amazon.com/codepipeline) named **quick-start**.
+6.  Approve the change set and wait for the pipeline to finish.
+7.  Navigate in the console to the resource whose property you changed and verify that it changed.
 
 ## Terminate Stacks
 
