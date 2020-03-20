@@ -51,7 +51,7 @@ aws cloudformation wait stack-create-complete \
 
 1.  Wait for the above stacks to finish being created.
 2.  In the [AWS Console](https://aws.amazon.com/console), open the new [AWS Cloud9](https://aws.amazon.com/cloud9) environment named **quick-start-ide**.
-3.  In **quick-start-ide**, try changing some property value in some *props.yaml* file inside *quickstart-shi-crpm/infra/*. For example, you could change the build server type from **BUILD_GENERAL1_SMALL** to **BUILD_GENERAL1_MEDIUM** as seen in the screenshot below.
+3.  In **quick-start-ide**, try changing some property value in some *props.yaml* file inside *quick-start/infra/*. For example, you could change the build server type from **BUILD_GENERAL1_SMALL** to **BUILD_GENERAL1_MEDIUM** as seen in the screenshot below.
     
     ![Screenshot](https://raw.githubusercontent.com/shi/quickstart-shi-crpm/master/img/screenshot1.png)
 4.  On the command line, commit the change and push it to AWS CodeCommit to kick off the AWS CodePipeline named **quick-start**.
