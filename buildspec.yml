@@ -4,24 +4,21 @@ phases:
     runtime-versions:
       nodejs: 10
     commands:
-      # Install command line applications globally
-      - npm install -g aws-cdk crpm
+      - npm uninstall -g cdk
+      - npm install -g aws-cdk@1.30.0 crpm@1.5.1
   pre_build:
     commands:
-      # Install dependencies locally
       - npm install
-      # Agree to Cloud Resource Property Manager license
       - date > /usr/local/lib/node_modules/crpm/.agreed
   build:
     commands:
-      # Transpile TypeScript to JavaScript
       - npm run build
-      # Synthesize CloudFormation template
       - crpm synth infra/developer-tools/codepipeline/pipeline
   post_build:
     commands:
-      # Validate CloudFormation template
-      - aws cloudformation validate-template --template-body file://infra/developer-tools/codepipeline/pipeline/stack.template.json
+      - >-
+        aws cloudformation validate-template --template-body
+        file://infra/developer-tools/codepipeline/pipeline/stack.template.json
 artifacts:
   files:
     - infra/developer-tools/codepipeline/pipeline/stack.template.json
