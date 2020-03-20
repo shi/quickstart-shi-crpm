@@ -62,7 +62,7 @@ aws cloudformation wait stack-create-complete \
     *Note: The first time the quick start is launched, the pipeline will run automatically.  You can approve it and let it continue completing, as it will not update anything.*
     
     ![Screenshot](https://raw.githubusercontent.com/shi/quickstart-shi-crpm/master/img/screenshot3.png)
-6.  After the **Deploy** stage has finished, navigate in the console to the resource whose property you changed and verify that it has changed.
+6.  After the **Deploy** stage has finished, navigate in the console to the resource whose property you changed, and verify that it has changed.
 
 ## Terminate Stacks
 
