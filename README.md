@@ -57,7 +57,9 @@ aws cloudformation wait stack-create-complete \
 4.  On the command line, commit the change and push it to AWS CodeCommit to kick off the AWS CodePipeline named **quick-start** as seen in the screenshot below.
     
     ![Screenshot](https://raw.githubusercontent.com/shi/quickstart-shi-crpm/master/img/screenshot2.png)
-5.  In the [AWS Console](https://aws.amazon.com/console), open the [AWS CodePipeline](https://aws.amazon.com/codepipeline) named **quick-start**.
+5.  In the [AWS Console](https://aws.amazon.com/console), open the [AWS CodePipeline](https://aws.amazon.com/codepipeline) named **quick-start**, scroll down to the **Review** stage, click the **Review** button, enter a message, and click the **Approve button** as seen in the screenshot below.
+    
+    ![Screenshot](https://raw.githubusercontent.com/shi/quickstart-shi-crpm/master/img/screenshot3.png)
 6.  Approve the change set and wait for the pipeline to finish.
 7.  Navigate in the console to the resource whose property you changed and verify that it changed.
 
