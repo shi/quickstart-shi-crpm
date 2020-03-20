@@ -23,7 +23,9 @@ The easiest way to launch the quick start, is to do it from a Cloud9 environment
 ## Create Stacks
 
 ```
-npm i
+npm uninstall -g cdk
+npm install -g aws-cdk@1.30.0 crpm@1.5.1
+npm install
 npm run build
 
 crpm synth infra/developer-tools/codepipeline/pipeline
