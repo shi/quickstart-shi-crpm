@@ -9,9 +9,9 @@ Create a CI/CD pipeline that watches itself for changes, and an IDE that can be 
 ## Getting Started
 
 This isn't an official [AWS Quick Start](https://aws.amazon.com/quickstart) yet, so here's how to use it in the meantime.
-The easiest way to launch the quick start, is to do it from a Cloud9 environment.
+The easiest way to launch the quick start, is to do it from an [AWS Cloud9](https://aws.amazon.com/cloud9) environment.
 
-1.  Log into the [AWS Console](https://aws.amazon.com/console) and create a new [AWS Cloud9](https://aws.amazon.com/cloud9) environment.
+1.  Log into the [AWS Console](https://aws.amazon.com/console) and create a new Cloud9 environment.
 2.  Open the new Cloud9 environment once it has been created, and clone this GitHub repo in it on the command line.
     
     ```
