@@ -30,23 +30,29 @@ npm install -g aws-cdk@1.30.0 crpm@1.5.1
 npm install
 npm run build
 
+# Synthesize the CloudFormation template
 crpm synth infra/developer-tools/codepipeline/pipeline
 
+# Start creating the pipeline CloudFormation stack
 aws cloudformation create-stack \
     --stack-name quick-start \
     --template-body file://infra/developer-tools/codepipeline/pipeline/stack.template.json \
     --capabilities CAPABILITY_NAMED_IAM
 
+# Wait for the stack to be created
 aws cloudformation wait stack-create-complete \
     --stack-name quick-start
 
+# Synthesize the CloudFormation template
 crpm synth infra/developer-tools/cloud9/environment-ec2
 
+# Start creating the IDE CloudFormation stack
 aws cloudformation create-stack \
     --stack-name quick-start-ide \
     --template-body file://infra/developer-tools/cloud9/environment-ec2/stack.template.json \
     --capabilities CAPABILITY_NAMED_IAM
 
+# Wait for the stack to be created
 aws cloudformation wait stack-create-complete \
     --stack-name quick-start-ide
 ```
