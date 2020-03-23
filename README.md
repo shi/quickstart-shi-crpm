@@ -30,7 +30,7 @@ npm install -g aws-cdk@1.30.0 crpm@1.5.1
 npm install
 npm run build
 
-# Synthesize the CloudFormation template
+# Synthesize the CloudFormation template stack.template.json
 crpm synth infra/developer-tools/codepipeline/pipeline
 
 # Start creating the pipeline CloudFormation stack
@@ -43,7 +43,7 @@ aws cloudformation create-stack \
 aws cloudformation wait stack-create-complete \
     --stack-name quick-start
 
-# Synthesize the CloudFormation template
+# Synthesize the CloudFormation template stack.template.json
 crpm synth infra/developer-tools/cloud9/environment-ec2
 
 # Start creating the IDE CloudFormation stack
@@ -62,6 +62,8 @@ aws cloudformation wait stack-create-complete \
 1.  Wait for the above stacks to finish being created.
 2.  In the [AWS Console](https://aws.amazon.com/console), open the new [AWS Cloud9](https://aws.amazon.com/cloud9) environment named **quick-start-ide**.
 3.  In **quick-start-ide**, try changing some property value in some *props.yaml* file inside *quick-start/infra/*. For example, you could change the build server type from **BUILD_GENERAL1_SMALL** to **BUILD_GENERAL1_MEDIUM** as seen in the screenshot below.
+    
+    [You can learn how to use crpm here](https://shi.github.io/crpm)
     
     ![Screenshot](https://raw.githubusercontent.com/shi/quickstart-shi-crpm/master/img/screenshot1.png)
 4.  On the command line, commit the change and push it to AWS CodeCommit to kick off the AWS CodePipeline named **quick-start** as seen in the screenshot below.
