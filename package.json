@@ -22,21 +22,21 @@
     "update-dependencies": "ncu -u"
   },
   "devDependencies": {
-    "@types/node": "~13.9.2",
-    "npm-check-updates": "~4.0.4",
+    "@types/node": "~13.9.5",
+    "npm-check-updates": "~4.1.0",
     "typescript": "~3.8.3"
   },
   "dependencies": {
-    "@aws-cdk/aws-cloud9": "~1.30.0",
-    "@aws-cdk/aws-cloudformation": "~1.30.0",
-    "@aws-cdk/aws-codebuild": "~1.30.0",
-    "@aws-cdk/aws-codecommit": "~1.30.0",
-    "@aws-cdk/aws-codepipeline": "~1.30.0",
-    "@aws-cdk/aws-lambda": "~1.30.0",
-    "@aws-cdk/core": "~1.30.0",
-    "@types/js-yaml": "~3.12.2",
-    "aws-cdk": "~1.30.0",
-    "crpm": "~1.5.1",
+    "@aws-cdk/aws-cloud9": "~1.31.0",
+    "@aws-cdk/aws-cloudformation": "~1.31.0",
+    "@aws-cdk/aws-codebuild": "~1.31.0",
+    "@aws-cdk/aws-codecommit": "~1.31.0",
+    "@aws-cdk/aws-codepipeline": "~1.31.0",
+    "@aws-cdk/aws-lambda": "~1.31.0",
+    "@aws-cdk/core": "~1.31.0",
+    "@types/js-yaml": "~3.12.3",
+    "aws-cdk": "~1.31.0",
+    "crpm": "~1.6.0",
     "js-yaml": "~3.13.1"
   }
 }

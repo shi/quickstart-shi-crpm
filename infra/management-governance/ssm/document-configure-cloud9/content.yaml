@@ -6,5 +6,5 @@ mainSteps:
     inputs:
       runCommand:
         - runuser -l ec2-user -c 'npm uninstall -g cdk'
-        - runuser -l ec2-user -c 'npm install -g aws-cdk@1.30.0 crpm@1.5.1'
+        - runuser -l ec2-user -c 'npm install -g aws-cdk@1.31.0 crpm@1.6.0'
       timeoutSeconds: 3600

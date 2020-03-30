@@ -5,7 +5,7 @@ phases:
       nodejs: 10
     commands:
       - npm uninstall -g cdk
-      - npm install -g aws-cdk@1.30.0 crpm@1.5.1
+      - npm install -g aws-cdk@1.31.0 crpm@1.6.0
   pre_build:
     commands:
       - npm install
