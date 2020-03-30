@@ -33,12 +33,14 @@ exports.handler =  async function(event, context) {
     console.log('Instance ID:', instanceId);
       
     // Associate an instance profile for SSM
+    const instanceProfileName = event.ResourceProperties.instanceProfileName;
     await ec2.associateIamInstanceProfile({
       IamInstanceProfile: {
-        Name: 'EC2SSMServiceRole'
+        Name: instanceProfileName
       },
       InstanceId: instanceId
     }).promise();
+    console.log('Associated instance profile', instanceProfileName);
     
     // Reboot the instance to make it available in SSM sooner
     console.log('Rebooting Instance');
