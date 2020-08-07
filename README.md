@@ -26,7 +26,7 @@ The easiest way to launch the quick start, is to do it from an [AWS Cloud9](http
 
 ```
 npm uninstall -g cdk
-npm install -g aws-cdk@1.47.0 crpm@1.9.1
+npm install -g aws-cdk@1.56.0 crpm@1.10.0
 npm install
 npm run build
 
