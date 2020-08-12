@@ -36,7 +36,7 @@ repositories:
     # Documentation: http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-cloud9-environmentec2-repository.html#cfn-cloud9-environmentec2-repository-repositoryurl
     # Type: string
     # Required
-    repositoryUrl: 'https://git-codecommit.us-east-1.amazonaws.com/v1/repos/quick-start'
+#    repositoryUrl: ''
 
 # Documentation: http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-cloud9-environmentec2.html#cfn-cloud9-environmentec2-subnetid
 # Type: string

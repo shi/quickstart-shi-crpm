@@ -17,6 +17,13 @@ export class EnvironmentEC2 extends cdk.Stack {
     // Cloud9 environment
     const props: crpm.Writeable<cloud9.CfnEnvironmentEC2Props> = crpm.loadProps(`${__dirname}/props.yaml`);
     props.name = cdk.Aws.STACK_NAME;
+    props.repositories[0].repositoryUrl = cdk.Fn.join("",
+      [
+        "https://git-codecommit.",
+        this.region,
+        ".amazonaws.com/v1/repos/quick-start",
+      ]
+    );
     const c9 = new cloud9.CfnEnvironmentEC2(this, 'EnvironmentEC2', props);
     
     // Cloud9 EC2 instance role
