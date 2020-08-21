@@ -6,13 +6,9 @@ phases:
     commands:
       - npm uninstall -g cdk
       - npm install -g aws-cdk@1.57.0 typescript
-  pre_build:
-    commands:
-      - npm install
-      - date > /usr/local/lib/node_modules/crpm/.agreed
+      - npm i
   build:
     commands:
-      - npm run build
       - cdk synth cicd
   post_build:
     commands:
