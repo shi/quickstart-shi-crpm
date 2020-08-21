@@ -1,27 +1,25 @@
-import cfn = require('@aws-cdk/aws-cloudformation');
-import codebuild = require('@aws-cdk/aws-codebuild');
-import codecommit = require('@aws-cdk/aws-codecommit');
-import codepipeline = require('@aws-cdk/aws-codepipeline');
-import events = require('@aws-cdk/aws-events');
-import iam = require('@aws-cdk/aws-iam');
-import lambda = require('@aws-cdk/aws-lambda');
-import s3 = require('@aws-cdk/aws-s3');
-import cdk = require('@aws-cdk/core');
-import crpm = require('crpm');
-import fs = require('fs');
+import * as cdk from '@aws-cdk/core';
+import * as cfn from '@aws-cdk/aws-cloudformation';
+import * as codebuild from '@aws-cdk/aws-codebuild';
+import * as codecommit from '@aws-cdk/aws-codecommit';
+import * as codepipeline from '@aws-cdk/aws-codepipeline';
+import * as events from '@aws-cdk/aws-events';
+import * as iam from '@aws-cdk/aws-iam';
+import * as lambda from '@aws-cdk/aws-lambda';
+import * as s3 from '@aws-cdk/aws-s3';
+import * as crpm from 'crpm';
+import * as fs from 'fs';
 
-const BASE_DIR = `${__dirname}/../../..`;
-
-export class Pipeline extends cdk.Stack {
-  constructor(scope: cdk.App, id: string, stackProps?: cdk.StackProps) {
-    super(scope, id, stackProps);
+export class CicdStack extends cdk.Stack {
+  constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
+    super(scope, id, props);
     
     // CloudFormation role
     // After this role has been used by the pipeline, it needs to stick around
     // until the very end when deleting the stack, because it will need to be
     // assumed to delete resources that were modified by the pipeline
-    const cfnRoleProps: crpm.Writeable<iam.CfnRoleProps> = crpm.loadProps(
-      `${BASE_DIR}/security-identity-compliance/iam/role-cloudformation/props.yaml`
+    const cfnRoleProps = crpm.load<iam.CfnRoleProps>(
+      `${__dirname}/../res/security-identity-compliance/iam/role-cloudformation/props.yaml`
     );
     cfnRoleProps.roleName = `cloudformation-${cdk.Aws.STACK_NAME}`;
     const cfnRole = new iam.CfnRole(this, 'CloudFormationRole', cfnRoleProps);
@@ -33,14 +31,14 @@ export class Pipeline extends cdk.Stack {
       artifactBucket = new s3.CfnBucket(
         this,
         'Bucket',
-        crpm.loadProps(`${BASE_DIR}/storage/s3/bucket-artifacts/props.yaml`)
+        crpm.load<s3.CfnBucketProps>(`${__dirname}/../res/storage/s3/bucket-artifacts/props.yaml`)
       );
       artifactBucketName = artifactBucket.ref;
     }
     
     // Lambda role
-    const fnRoleProps: crpm.Writeable<iam.CfnRoleProps> = crpm.loadProps(
-      `${BASE_DIR}/security-identity-compliance/iam/role-lambda/props.yaml`
+    const fnRoleProps = crpm.load<iam.CfnRoleProps>(
+      `${__dirname}/../res/security-identity-compliance/iam/role-lambda/props.yaml`
     );
     fnRoleProps.roleName = `lambda-${cdk.Aws.STACK_NAME}`;
     const fnRole = new iam.CfnRole(this, 'LambdaRole', fnRoleProps);
@@ -48,8 +46,8 @@ export class Pipeline extends cdk.Stack {
     fnRole.addDependsOn(cfnRole);
     
     // Lambda function
-    const fnDir = `${BASE_DIR}/compute/lambda/function-custom-resource`;
-    const fnProps: crpm.Writeable<lambda.CfnFunctionProps> = crpm.loadProps(`${fnDir}/props.yaml`);
+    const fnDir = `${__dirname}/../res/compute/lambda/function-custom-resource`;
+    const fnProps = crpm.load<lambda.CfnFunctionProps>(`${fnDir}/props.yaml`);
     fnProps.code = {
       zipFile: fs.readFileSync(`${fnDir}/index.py`, 'utf8')
     }
@@ -58,8 +56,8 @@ export class Pipeline extends cdk.Stack {
     const fn = new lambda.CfnFunction(this, 'Function', fnProps);
     
     // Custom resource
-    const crProps: crpm.Writeable<cfn.CfnCustomResourceProps> = crpm.loadProps(
-      `${BASE_DIR}/management-governance/cloudformation/custom-resource/props.yaml`
+    const crProps = crpm.load<cfn.CfnCustomResourceProps>(
+      `${__dirname}/../res/management-governance/cloudformation/custom-resource/props.yaml`
     );
     crProps.serviceToken = fn.attrArn;
     const cr = new cfn.CfnCustomResource(this, 'CustomResource', crProps);
@@ -71,8 +69,8 @@ export class Pipeline extends cdk.Stack {
     }
     
     // CodeCommit repository
-    const repoProps: crpm.Writeable<codecommit.CfnRepositoryProps> = crpm.loadProps(
-      `${BASE_DIR}/developer-tools/codecommit/repository/props.yaml`
+    const repoProps = crpm.load<codecommit.CfnRepositoryProps>(
+      `${__dirname}/../res/developer-tools/codecommit/repository/props.yaml`
     );
     repoProps.repositoryName = cdk.Aws.STACK_NAME;
     (repoProps.code as any).s3.bucket = artifactBucketName;
@@ -80,30 +78,30 @@ export class Pipeline extends cdk.Stack {
     repo.addDependsOn(cr);
     
     // CodeBuild role
-    const projectRoleProps: crpm.Writeable<iam.CfnRoleProps> = crpm.loadProps(
-      `${BASE_DIR}/security-identity-compliance/iam/role-codebuild/props.yaml`
+    const projectRoleProps = crpm.load<iam.CfnRoleProps>(
+      `${__dirname}/../res/security-identity-compliance/iam/role-codebuild/props.yaml`
     );
     projectRoleProps.roleName = `codebuild-${cdk.Aws.STACK_NAME}`;
     const projectRole = new iam.CfnRole(this, 'CodeBuildRole', projectRoleProps);
     
     // CodeBuild project
-    const projectProps: crpm.Writeable<codebuild.CfnProjectProps> = crpm.loadProps(
-      `${BASE_DIR}/developer-tools/codebuild/project/props.yaml`
+    const projectProps = crpm.load<codebuild.CfnProjectProps>(
+      `${__dirname}/../res/developer-tools/codebuild/project/props.yaml`
     );
     projectProps.serviceRole = projectRole.attrArn;
     projectProps.name = cdk.Aws.STACK_NAME;
     const project = new codebuild.CfnProject(this, 'Project', projectProps);
     
     // CodePipeline role
-    const pipelineRoleProps: crpm.Writeable<iam.CfnRoleProps> = crpm.loadProps(
-      `${BASE_DIR}/security-identity-compliance/iam/role-codepipeline/props.yaml`
+    const pipelineRoleProps = crpm.load<iam.CfnRoleProps>(
+      `${__dirname}/../res/security-identity-compliance/iam/role-codepipeline/props.yaml`
     );
     pipelineRoleProps.roleName = `codepipeline-${cdk.Aws.STACK_NAME}`;
     const pipelineRole = new iam.CfnRole(this, 'CodePipelineRole', pipelineRoleProps);
     
     // CodePipeline pipeline
-    const pipelineProps: crpm.Writeable<codepipeline.CfnPipelineProps> = crpm.loadProps(
-      `${BASE_DIR}/developer-tools/codepipeline/pipeline/props.yaml`
+    const pipelineProps = crpm.load<codepipeline.CfnPipelineProps>(
+      `${__dirname}/../res/developer-tools/codepipeline/pipeline/props.yaml`
     );
     pipelineProps.roleArn = pipelineRole.attrArn;
     const stages = (pipelineProps.stages as any);
@@ -121,15 +119,15 @@ export class Pipeline extends cdk.Stack {
     const pipeline = new codepipeline.CfnPipeline(this, 'Pipeline', pipelineProps);
     
     // CloudWatch Events role
-    const eventsRoleProps: crpm.Writeable<iam.CfnRoleProps> = crpm.loadProps(
-      `${BASE_DIR}/security-identity-compliance/iam/role-events/props.yaml`
+    const eventsRoleProps = crpm.load<iam.CfnRoleProps>(
+      `${__dirname}/../res/security-identity-compliance/iam/role-events/props.yaml`
     );
     eventsRoleProps.roleName = `cloudwatch-events-${cdk.Aws.STACK_NAME}`;
     const eventsRole = new iam.CfnRole(this, 'EventsRole', eventsRoleProps);
     
     // CloudWatch Events rule
-    const ruleProps: crpm.Writeable<events.CfnRuleProps> = crpm.loadProps(
-      `${BASE_DIR}/management-governance/events/rule/props.yaml`
+    const ruleProps = crpm.load<events.CfnRuleProps>(
+      `${__dirname}/../res/management-governance/events/rule/props.yaml`
     );
     ruleProps.eventPattern.resources = [
       repo.attrArn

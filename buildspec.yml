@@ -5,7 +5,7 @@ phases:
       nodejs: 10
     commands:
       - npm uninstall -g cdk
-      - npm install -g aws-cdk@1.57.0 crpm@1.13.0
+      - npm install -g aws-cdk@1.57.0 typescript
   pre_build:
     commands:
       - npm install
@@ -13,12 +13,12 @@ phases:
   build:
     commands:
       - npm run build
-      - crpm synth infra/developer-tools/codepipeline/pipeline
+      - cdk synth cicd
   post_build:
     commands:
       - >-
         aws cloudformation validate-template --template-body
-        file://infra/developer-tools/codepipeline/pipeline/stack.template.json
+        file://cdk.out/cicd.template.json
 artifacts:
   files:
-    - infra/developer-tools/codepipeline/pipeline/stack.template.json
+    - cdk.out/cicd.template.json
