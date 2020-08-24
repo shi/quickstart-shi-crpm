@@ -21,7 +21,8 @@ export class IdeStack extends cdk.Stack {
       [
         'https://git-codecommit.',
         this.region,
-        '.amazonaws.com/v1/repos/quick-start',
+        '.amazonaws.com/v1/repos/',
+        cdk.Aws.STACK_NAME
       ]
     );
     const c9 = new cloud9.CfnEnvironmentEC2(this, 'EnvironmentEC2', cloud9Props);
