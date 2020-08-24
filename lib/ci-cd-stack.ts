@@ -11,6 +11,8 @@ import * as crpm from 'crpm';
 import * as fs from 'fs';
 
 export class CicdStack extends cdk.Stack {
+  readonly repoName: string;
+  
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
     
@@ -76,6 +78,7 @@ export class CicdStack extends cdk.Stack {
     (repoProps.code as any).s3.bucket = artifactBucketName;
     const repo = new codecommit.CfnRepository(this, 'Repository', repoProps);
     repo.addDependsOn(cr);
+    this.repoName = repo.attrName;
     
     // CodeBuild role
     const projectRoleProps = crpm.load<iam.CfnRoleProps>(

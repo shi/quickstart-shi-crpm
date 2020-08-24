@@ -9,8 +9,8 @@ const cicd = new CicdStack(app, 'cicd', {
   stackName: 'quickstart-shi-crpm-ci-cd',
   description: 'Infrastructure CI-CD quick start'
 });
-const ide = new IdeStack(app, 'ide', {
+new IdeStack(app, 'ide', {
   stackName: 'quickstart-shi-crpm-ide',
-  description: 'Cloud9 IDE with crpm pre-installed and quick start code checked out'
+  description: 'Cloud9 IDE with crpm pre-installed and quick start code checked out',
+  repoName: cicd.repoName
 });
-ide.addDependency(cicd);

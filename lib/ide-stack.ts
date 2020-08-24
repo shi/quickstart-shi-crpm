@@ -8,8 +8,12 @@ import * as crpm from 'crpm';
 import * as fs from 'fs';
 import * as yaml from 'js-yaml';
 
+interface IdeStackProps extends cdk.StackProps {
+  repoName: string;
+}
+
 export class IdeStack extends cdk.Stack {
-  constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
+  constructor(scope: cdk.Construct, id: string, props: IdeStackProps) {
     super(scope, id, props);
     
     // Cloud9 environment
@@ -22,7 +26,7 @@ export class IdeStack extends cdk.Stack {
         'https://git-codecommit.',
         this.region,
         '.amazonaws.com/v1/repos/',
-        cdk.Aws.STACK_NAME
+        props.repoName
       ]
     );
     const c9 = new cloud9.CfnEnvironmentEC2(this, 'EnvironmentEC2', cloud9Props);
