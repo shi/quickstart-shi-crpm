@@ -53,6 +53,6 @@ cdk deploy quickstart
 ## Destroy Stacks
 
 ```bash
-# Destroy the IDE and infrastructure CI/CD pipeline
+# Destroy the infrastructure CI/CD pipeline stack and nested IDE stack
 cdk destroy quickstart
 ```
