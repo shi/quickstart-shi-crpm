@@ -5,7 +5,7 @@ import { CicdStack } from '../lib/ci-cd-stack';
 import { IdeStack } from '../lib/ide-stack';
 
 const app = new cdk.App();
-const cicd = new CicdStack(app, 'cicd', {
+const cicd = new CicdStack(app, 'quickstart', {
   stackName: 'quickstart-shi-crpm-ci-cd',
   description: 'Infrastructure CI-CD quick start'
 });

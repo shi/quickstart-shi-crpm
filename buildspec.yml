@@ -4,13 +4,19 @@ phases:
     runtime-versions:
       nodejs: 10
     commands:
+      - echo Installing dependencies...
       - npm install -g typescript
-      - npm i
+      - echo Installing CDK application...
+      - npm install
   build:
     commands:
+      - echo Build started `date`
+      - echo Synthesizing AWS CloudFormation template...
       - cdk synth cicd
   post_build:
     commands:
+      - echo Build finished `date`
+      - echo Validating AWS CloudFormation template...
       - >-
         aws cloudformation validate-template --template-body
         file://cdk.out/cicd.template.json

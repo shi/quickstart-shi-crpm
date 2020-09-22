@@ -13,7 +13,7 @@ The easiest way to launch the quick start, is to do it from an [AWS Cloud9](http
 
 1.  Log into the [AWS Console](https://aws.amazon.com/console) and create a new Cloud9 environment.
 2.  Open the new Cloud9 environment once it has been created.
-3.  Follow the instructions below.  You will end up with two Cloud9 environments when you are all done, and can delete this first one created in the **Getting Started** section after the second one below, **quick-start-ide**, has been created.
+3.  Follow the instructions below.  You will end up with two Cloud9 environments when you are all done, and can delete this first one created in the **Getting Started** section after the second one below, **quickstart-shi-crpm-ide**, has been created.
 
 ## Create Stacks
 
