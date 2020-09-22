@@ -18,8 +18,11 @@ The easiest way to launch the quick start, is to do it from an [AWS Cloud9](http
 ## Create Stacks
 
 ```bash
-# Install dependencies
-npm i -g crpm typescript
+# Install dependency
+npm i -g typescript
+
+# Install AWS CDK if you don't have it already (you can check with: cdk --version)
+npm i -g aws-cdk
 
 # Clone the quick start code and install the CDK app
 git clone https://github.com/aws-quickstart/quickstart-shi-crpm
