@@ -5,10 +5,11 @@ import { CicdStack } from '../lib/ci-cd-stack';
 import { IdeStack } from '../lib/ide-stack';
 
 const app = new cdk.App();
-const cicd = new CicdStack(app, 'quickstart', {
+new CicdStack(app, 'quickstart', {
   stackName: 'quickstart-shi-crpm-ci-cd',
   description: 'Infrastructure CI-CD quick start'
 });
-new IdeStack(cicd, 'ide', {
-  repoName: cicd.repoName
+new IdeStack(app, 'ide', {
+  stackName: 'quickstart-shi-crpm-ide',
+  description: 'Cloud9 IDE with crpm pre-installed and quick start code checked out'
 });

@@ -13,7 +13,7 @@ The easiest way to launch the quick start, is to do it from an [AWS Cloud9](http
 
 1.  Log into the [AWS Console](https://aws.amazon.com/console) and create a new Cloud9 environment.
 2.  Open the new Cloud9 environment once it has been created.
-3.  Follow the instructions below.  You will end up with two Cloud9 environments when you are all done, and can delete this first one created in the **Getting Started** section after the second one below, **quickstart-shi-crpm-ide**, has been created.
+3.  Follow the instructions below.  You will end up with two Cloud9 environments when you are all done, and can delete this first one created in the **Getting Started** section after the second one below, has been created.
 
 ## Create Stacks
 
@@ -29,15 +29,22 @@ git clone https://github.com/aws-quickstart/quickstart-shi-crpm
 cd quickstart-shi-crpm
 npm i
 
+# Synthesize the IDE stack CloudFormation template
+cdk synth ide
+
+# Copy the CloudFormation template located at cdk.out/ide.template.json into
+# some S3 bucket in your account
+aws s3 cp cdk.out/ide.template.json s3://artifacts-774461968944/quickstart-shi-crpm/ide.template.json
+
 # Deploy the infrastructure CI/CD stack and the nested IDE stack as well
-cdk deploy quickstart
+cdk deploy quickstart --parameters IdeStackTemplateURL=https://s3.amazonaws.com/artifacts-774461968944/quickstart-shi-crpm/ide.template.json
 ```
 
 ## Usage
 
 1.  Wait for the above stacks to finish being created.
-2.  In the [AWS Console](https://aws.amazon.com/console), open the new [AWS Cloud9](https://aws.amazon.com/cloud9) environment named **quickstart-shi-crpm-ide**.
-3.  In **quickstart-shi-crpm-ide**, try changing some property value in any *props.yaml* file in one of the nested directories in *quick-start/res/*. For example, you could change the build server type from **BUILD_GENERAL1_SMALL** to **BUILD_GENERAL1_MEDIUM** as seen in the screenshot below. [You can learn more about **crpm** and properties files here](https://shi.github.io/crpm).
+2.  In the [AWS Console](https://aws.amazon.com/console), open the newly created [AWS Cloud9](https://aws.amazon.com/cloud9) environment.
+3.  Then, try changing some property value in any *props.yaml* file in one of the nested directories in *quick-start/res/*. For example, you could change the build server type from **BUILD_GENERAL1_SMALL** to **BUILD_GENERAL1_MEDIUM** as seen in the screenshot below. [You can learn more about **crpm** and properties files here](https://shi.github.io/crpm).
     
     ![Screenshot](https://raw.githubusercontent.com/shi/quickstart-shi-crpm/master/img/screenshot1.png)
 4.  On the command line, commit the change and push it to AWS CodeCommit to kick off the AWS CodePipeline as seen in the screenshot below.

@@ -11,10 +11,14 @@ import * as crpm from 'crpm';
 import * as fs from 'fs';
 
 export class CicdStack extends cdk.Stack {
-  readonly repoName: string;
-  
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
+    
+    // IDE stack CloudFormation template S3 URL parameter
+    const nestedStackTemplateUrlParameter = new cdk.CfnParameter(this, 'IdeStackTemplateURL', {
+      type: 'String',
+      description: 'IDE stack CloudFormation template S3 URL parameter'
+    });
     
     // CloudFormation role
     // After this role has been used by the pipeline, it needs to stick around
@@ -72,7 +76,6 @@ export class CicdStack extends cdk.Stack {
     (repoProps.code as any).s3.bucket = artifactBucketName;
     const repo = new codecommit.CfnRepository(this, 'Repository', repoProps);
     repo.addDependsOn(cr);
-    this.repoName = repo.attrName;
     
     // CodeBuild role
     const projectRoleProps = crpm.load<iam.CfnRoleProps>(
@@ -128,6 +131,14 @@ export class CicdStack extends cdk.Stack {
     target.arn = `arn:aws:codepipeline:${this.region}:${this.account}:${pipeline.ref}`;
     target.roleArn = eventsRole.attrArn;
     new events.CfnRule(this, 'Rule', ruleProps);
+    
+    // Nested CloudFormation stack
+    const nestedStackProps = crpm.load<cfn.CfnStackProps>(`${__dirname}/../res/management-governance/cloudformation/stack/props.yaml`);
+    nestedStackProps.templateUrl = nestedStackTemplateUrlParameter.valueAsString;
+    nestedStackProps.parameters = {
+      RepoName: repo.attrName
+    };
+    new cfn.CfnStack(this, 'Stack', nestedStackProps);
     
     // CodeCommit repository clone URL
     new cdk.CfnOutput(this, 'CodeCommitURL', {value: repo.attrCloneUrlHttp});
