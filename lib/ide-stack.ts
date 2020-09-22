@@ -8,11 +8,11 @@ import * as crpm from 'crpm';
 import * as fs from 'fs';
 import * as yaml from 'js-yaml';
 
-interface IdeStackProps extends cdk.StackProps {
+interface IdeStackProps extends cdk.NestedStackProps {
   repoName: string;
 }
 
-export class IdeStack extends cdk.Stack {
+export class IdeStack extends cdk.NestedStack {
   constructor(scope: cdk.Construct, id: string, props: IdeStackProps) {
     super(scope, id, props);
     

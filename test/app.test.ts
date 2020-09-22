@@ -7,7 +7,7 @@ test('All Stacks', () => {
     const app = new cdk.App();
     const cicd = new CicdStack(app, 'quickstart');
     expectCDK(cicd).to(haveResource('AWS::CodePipeline::Pipeline'));
-    const ide = new IdeStack(app, 'ide', {
+    const ide = new IdeStack(cicd, 'ide', {
       repoName: cicd.repoName
     });
     expectCDK(ide).to(haveResource('AWS::Cloud9::EnvironmentEC2'));
