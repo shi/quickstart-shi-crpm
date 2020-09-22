@@ -35,7 +35,6 @@ export class IdeStack extends cdk.Stack {
     const ec2RoleProps = crpm.load<iam.CfnRoleProps>(
       `${__dirname}/../res/security-identity-compliance/iam/role-ec2/props.yaml`
     );
-    ec2RoleProps.roleName = `ec2-${cdk.Aws.STACK_NAME}`;
     const ec2Role = new iam.CfnRole(this, 'EC2Role', ec2RoleProps);
     
     // Instance profile
@@ -43,21 +42,18 @@ export class IdeStack extends cdk.Stack {
       `${__dirname}/../res/security-identity-compliance/iam/instance-profile-ide/props.yaml`
     );
     instanceProfileProps.roles = [ec2Role.ref];
-    instanceProfileProps.instanceProfileName = cloud9Props.name;
     const instanceProfile = new iam.CfnInstanceProfile(this, 'InstanceProfile', instanceProfileProps);
     
     // Systems Manager document
     const ssmDocDir = `${__dirname}/../res/management-governance/ssm/document-configure-cloud9`;
     const ssmDocProps = crpm.load<ssm.CfnDocumentProps>(`${ssmDocDir}/props.yaml`);
     ssmDocProps.content = yaml.safeLoad(fs.readFileSync(`${ssmDocDir}/content.yaml`, 'utf8'));
-    ssmDocProps.name = `${cdk.Aws.STACK_NAME}-configure-cloud9`;
     const ssmDoc = new ssm.CfnDocument(this, 'Document', ssmDocProps);
     
     // Lambda role
     const lambdaRoleProps = crpm.load<iam.CfnRoleProps>(
       `${__dirname}/../res/security-identity-compliance/iam/role-lambda/props.yaml`
     );
-    lambdaRoleProps.roleName = `lambda-${cdk.Aws.STACK_NAME}`;
     const lambdaRole = new iam.CfnRole(this, 'LambdaRole', lambdaRoleProps);
     
     // Lambda function
@@ -67,7 +63,6 @@ export class IdeStack extends cdk.Stack {
       zipFile: fs.readFileSync(`${fnDir}/index.js`, 'utf8')
     }
     fnProps.role = lambdaRole.attrArn;
-    fnProps.functionName = `${cdk.Aws.STACK_NAME}-custom-resource`;
     const fn = new lambda.CfnFunction(this, 'Function', fnProps);
     
     // Custom resource

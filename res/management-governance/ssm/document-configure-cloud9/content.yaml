@@ -5,6 +5,5 @@ mainSteps:
     name: InstallCRPM
     inputs:
       runCommand:
-        - runuser -l ec2-user -c 'npm uninstall -g cdk'
-        - runuser -l ec2-user -c 'npm install -g aws-cdk@1.57.0 crpm@2.1.0 typescript'
+        - runuser -l ec2-user -c 'npm install -g crpm typescript'
       timeoutSeconds: 3600
