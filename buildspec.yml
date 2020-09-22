@@ -13,14 +13,14 @@ phases:
     commands:
       - echo Build started `date`
       - echo Synthesizing AWS CloudFormation template...
-      - cdk synth cicd
+      - cdk synth quickstart
   post_build:
     commands:
       - echo Build finished `date`
       - echo Validating AWS CloudFormation template...
       - >-
         aws cloudformation validate-template --template-body
-        file://cdk.out/cicd.template.json
+        file://cdk.out/quickstart.template.json
 artifacts:
   files:
-    - cdk.out/cicd.template.json
+    - cdk.out/quickstart.template.json
