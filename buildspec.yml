@@ -13,7 +13,7 @@ phases:
     commands:
       - echo Build started `date`
       - echo Synthesizing AWS CloudFormation template...
-      - cdk synth quickstart
+      - cdk synth quickstart --parameters IdeStackTemplateURL=$IDE_STACK_TEMPLATE_URL
   post_build:
     commands:
       - echo Build finished `date`

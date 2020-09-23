@@ -88,6 +88,10 @@ export class CicdStack extends cdk.Stack {
       `${__dirname}/../res/developer-tools/codebuild/project/props.yaml`
     );
     projectProps.serviceRole = projectRole.attrArn;
+    ((projectProps.environment as codebuild.CfnProject.EnvironmentProperty).environmentVariables as Array<codebuild.CfnProject.EnvironmentVariableProperty>) = [{
+      name: 'IDE_STACK_TEMPLATE_URL',
+      value: nestedStackTemplateUrlParameter.valueAsString
+    }];
     const project = new codebuild.CfnProject(this, 'Project', projectProps);
     
     // CodePipeline role
@@ -104,8 +108,10 @@ export class CicdStack extends cdk.Stack {
     const stages = (pipelineProps.stages as any);
     stages[0].actions[0].configuration.RepositoryName = repo.attrName;
     stages[1].actions[0].configuration.ProjectName = project.ref;
+    stages[2].actions[0].configuration.ParameterOverrides = cdk.Fn.join('', ['{"IdeStackTemplateURL": "', nestedStackTemplateUrlParameter.valueAsString, '"}']);
     stages[2].actions[0].configuration.RoleArn = cfnRole.attrArn;
     stages[2].actions[0].configuration.StackName = cdk.Aws.STACK_NAME;
+    stages[3].actions[0].configuration.ParameterOverrides = stages[2].actions[0].configuration.ParameterOverrides;
     stages[3].actions[0].configuration.RoleArn = cfnRole.attrArn;
     stages[3].actions[0].configuration.StackName = cdk.Aws.STACK_NAME;
     pipelineProps.artifactStore = {
