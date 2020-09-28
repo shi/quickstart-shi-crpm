@@ -34,10 +34,10 @@ cdk synth ide
 
 # Copy the CloudFormation template located at cdk.out/ide.template.json into
 # some S3 bucket in your account
-aws s3 cp cdk.out/ide.template.json s3://artifacts-774461968944/quickstart-shi-crpm/ide.template.json
+aws s3 cp cdk.out/ide.template.json s3://BUCKET_NAME/ide.template.json
 
 # Deploy the infrastructure CI/CD stack and the nested IDE stack as well
-cdk deploy quickstart --parameters IdeStackTemplateURL=https://s3.amazonaws.com/artifacts-774461968944/quickstart-shi-crpm/ide.template.json
+cdk deploy quickstart --parameters IdeStackTemplateURL=https://s3.amazonaws.com/BUCKET_NAME/ide.template.json
 ```
 
 ## Usage
