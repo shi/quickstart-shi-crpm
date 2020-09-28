@@ -50,6 +50,7 @@ policies:
         - Effect: Allow
           Action:
             - 'cloud9:DeleteEnvironment'
+            - 'cloud9:DescribeEnvironments'
             - 'codecommit:*'
             - 'codebuild:*'
             - 'codepipeline:*'
