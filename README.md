@@ -25,7 +25,7 @@ npm i -g typescript
 npm i -g aws-cdk
 
 # Clone the quick start code and install the CDK app
-git clone https://github.com/aws-quickstart/quickstart-shi-crpm
+git clone https://github.com/shi/quickstart-shi-crpm
 cd quickstart-shi-crpm
 npm i
 
